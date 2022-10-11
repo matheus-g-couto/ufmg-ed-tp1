@@ -6,12 +6,10 @@ class CaixaDeEntrada {
     Email *email_head;
 
   public:
-    CaixaDeEntrada() : id(-1), email_head(NULL){};
+    CaixaDeEntrada();
     ~CaixaDeEntrada();
     void setId(int id);
     int getId();
     std::string consultaEmail();
-    void recebeEmail(Email e);
-
-    friend class Arvore;
+    void recebeEmail(Email *e);
 };

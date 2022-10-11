@@ -4,12 +4,15 @@ class Email {
   private:
     std::string msg;
     int priority;
-    Email *prox;
+    Email *next;
 
   public:
-    Email(){};
-    Email(std::string m, int p) : msg(m), priority(p) {}
+    Email();
+    Email(std::string msg, int prio);
+    ~Email();
+    void setMessage(std::string msg);
     std::string getMessage();
+    void setPrio(int prio);
     int getPrio();
 
     friend class CaixaDeEntrada;

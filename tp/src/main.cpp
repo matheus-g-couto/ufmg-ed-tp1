@@ -1,3 +1,4 @@
+#include "caixa_de_entrada.h"
 #include "memlog.h"
 #include "msgassert.h"
 #include <fstream>
@@ -49,5 +50,14 @@
     avisoAssert(has_log, "Usando o arquivo de log padrao: bin/log.out");
 }
 */
+
+struct ListaCaixas {
+    CaixaDeEntrada caixa;
+    CaixaDeEntrada *prox;
+};
+
+struct Servidor {
+    CaixaDeEntrada *head;
+};
 
 int main(int argc, char **argv) { return 0; }
