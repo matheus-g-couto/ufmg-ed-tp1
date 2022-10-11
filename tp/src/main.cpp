@@ -1,7 +1,6 @@
 #include "caixa_de_entrada.h"
 #include "memlog.h"
 #include "msgassert.h"
-#include <fstream>
 #include <getopt.h>
 #include <iostream>
 #include <string>
@@ -57,7 +56,7 @@ struct ListaCaixas {
 };
 
 struct Servidor {
-    CaixaDeEntrada *head;
+    ListaCaixas l;
 };
 
 int main(int argc, char **argv) { return 0; }
