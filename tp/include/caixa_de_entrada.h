@@ -1,4 +1,8 @@
+#ifndef CAIXA_DE_ENTRADA_H
+#define CAIXA_DE_ENTRADA_H
+
 #include "email.h"
+#include <string>
 
 class CaixaDeEntrada {
   private:
@@ -11,5 +15,8 @@ class CaixaDeEntrada {
     void setId(int id);
     int getId();
     std::string consultaEmail();
-    void recebeEmail(Email *e);
+    void recebeEmail(std::string msg, int prio);
+    void limpaCaixa();
 };
+
+#endif

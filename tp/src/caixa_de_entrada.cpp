@@ -1,40 +1,55 @@
 #include "caixa_de_entrada.h"
+#include <iostream>
 
 CaixaDeEntrada::CaixaDeEntrada() {
     id = -1;
-    email_head = new Email();
+    email_head = new Email;
 }
 
-CaixaDeEntrada::~CaixaDeEntrada() {}
+CaixaDeEntrada::~CaixaDeEntrada() {
+    limpaCaixa();
+    id = -1;
+    delete email_head;
+}
 
 void CaixaDeEntrada::setId(int id) { this->id = id; }
 
 int CaixaDeEntrada::getId() { return this->id; }
 
 std::string CaixaDeEntrada::consultaEmail() {
-    Email *aux;
-    std::string msg;
-
     if (email_head->next == NULL)
-        throw("Nenhum email");
+        // dar erro
+        return "nao tem msg";
 
-    msg = email_head->next->getMessage();
-    aux = email_head;
-    email_head = email_head->next;
+    Email *aux = email_head->next;
+    std::string msg = aux->getMessage();
+
+    email_head->next = aux->next;
     delete aux;
 
     return msg;
 }
 
-void CaixaDeEntrada::recebeEmail(Email *e) {
+void CaixaDeEntrada::recebeEmail(std::string msg, int prio) {
+    Email *incoming = new Email(msg, prio);
+
     if (email_head->next == NULL)
-        email_head->next = e;
+        email_head->next = incoming;
     else {
         Email *aux = email_head;
-        while (aux->next->getPrio() >= e->getPrio())
+        while (aux->next != NULL && aux->next->priority >= prio)
             aux = aux->next;
 
-        e->next = aux->next;
-        aux->next = e;
+        incoming->next = aux->next;
+        aux->next = incoming;
+    }
+}
+
+void CaixaDeEntrada::limpaCaixa() {
+    Email *aux = email_head->next;
+    while (aux != NULL) {
+        email_head->next = aux->next;
+        delete aux;
+        aux = email_head->next;
     }
 }
