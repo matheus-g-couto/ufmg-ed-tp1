@@ -1,20 +1,28 @@
+#ifndef SERVIDOR_H
+#define SERVIDOR_H
+
 #include "caixa_de_entrada.h"
 
-struct No {
+// Cada usuário tem uma caixa de entrada e aponta para um outro usuário
+struct User {
     CaixaDeEntrada *caixa;
-    No *ant;
-    No *next;
-    No() : caixa(new CaixaDeEntrada()), ant(NULL), next(NULL){};
+    User *next;
 };
 
+// Implementa uma pilha de usuários, com inserção no topo e remoção de qualquer
+// lugar
 class Servidor {
   private:
-    No *head;
-    No *encontrarCaixa(int id);
+    User *head;
+    User *encontrarCaixa(int id);
+    void printaCaixas();
 
   public:
     Servidor();
     ~Servidor();
-    void criarCaixa(int id);
-    void excluirCaixa(int id);
+    bool criarCaixa(int id);
+    bool excluirCaixa(int id);
+    void limpaServidor();
 };
+
+#endif

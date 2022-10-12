@@ -1,43 +1,42 @@
 #include "servidor.h"
+#include <iostream>
 
-Servidor::Servidor() { head = new No(); }
+Servidor::Servidor() {
+    head = new User;
+    head->caixa = NULL;
+    head->next = NULL;
+}
 
 Servidor::~Servidor() {}
 
-No *Servidor::encontrarCaixa(int id) {
-    No *aux = head;
+User *Servidor::encontrarCaixa(int id) {
+    User *aux = head;
+
     while (aux->next != NULL) {
-        aux = aux->next;
         if (aux->caixa->getId() == id)
             return aux;
+        aux = aux->next;
     }
-
     return NULL;
 }
 
-void Servidor::criarCaixa(int id) {
+void Servidor::printaCaixas() {}
+
+bool Servidor::criarCaixa(int id) {
     if (encontrarCaixa(id) != NULL)
-        throw("Caixa já existe");
-    else {
-        No *novo = new No();
-        novo->caixa = new CaixaDeEntrada();
-        novo->caixa->setId(id);
+        return false;
 
-        head->ant = novo;
-        novo->next = head;
-        head = novo;
-    }
+    CaixaDeEntrada *cx = new CaixaDeEntrada;
+    cx->setId(id);
+
+    User *user = new User;
+    user->caixa = cx;
+    user->next = head;
+
+    head = user;
+    return true;
 }
 
-void Servidor::excluirCaixa(int id) {
-    No *item = encontrarCaixa(id);
-    if (item == NULL)
-        throw("Caixa não existe");
-    else {
-        No *aux = item;
-        item->next->ant = aux->ant;
-        item->ant->next = aux->next;
-        delete item->caixa;
-        delete item;
-    }
-}
+bool Servidor::excluirCaixa(int id) {}
+
+void Servidor::limpaServidor() {}

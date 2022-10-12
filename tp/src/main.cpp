@@ -1,8 +1,12 @@
 #include "caixa_de_entrada.h"
+#include "email.h"
 #include "memlog.h"
 #include "msgassert.h"
+#include "servidor.h"
+#include <fstream>
 #include <getopt.h>
 #include <iostream>
+#include <sstream>
 #include <string>
 
 /* struct Flags {
@@ -50,13 +54,81 @@
 }
 */
 
-struct ListaCaixas {
-    CaixaDeEntrada caixa;
-    CaixaDeEntrada *prox;
-};
+enum Options { CADASTRA, REMOVE, ENTREGA, CONSULTA, INVALIDO };
 
-struct Servidor {
-    ListaCaixas l;
-};
+Options resolveOption(std::string input) {
+    if (input == "CADASTRA")
+        return CADASTRA;
+    if (input == "REMOVE")
+        return REMOVE;
+    if (input == "ENTREGA")
+        return ENTREGA;
+    if (input == "CONSULTA")
+        return CONSULTA;
 
-int main(int argc, char **argv) { return 0; }
+    return INVALIDO;
+}
+
+int main(int argc, char **argv) {
+    // Servidor *server = new Servidor();
+
+    // std::string input;
+    // std::stringstream ss;
+
+    // std::ofstream output("bin/out.txt");
+    // while (std::getline(std::cin, input)) {
+    //     ss = std::stringstream();
+    //     ss << input;
+    //     std::string op;
+    //     ss >> op;
+
+    //     int id = -1;
+    //     ss >> id;
+
+    //     switch (resolveOption(op)) {
+    //         case CADASTRA:
+    //             if (server->criarCaixa(id))
+    //                 output << "CONTA " << id << " CADASTRADA" << std::endl;
+    //             else
+    //                 output << "CONTA " << id << " JA EXISTENTE" << std::endl;
+    //             break;
+    //         case REMOVE:
+    //             server->excluirCaixa(id);
+    //             break;
+    //         case ENTREGA:
+    //             break;
+    //         case CONSULTA:
+    //             break;
+
+    //         default:
+    //             break;
+    //     }
+
+    //     // std::cout << op << std::endl;
+    // }
+
+    // CaixaDeEntrada *c = new CaixaDeEntrada;
+    // std::cout << c->consultaEmail() << std::endl;
+    // c->recebeEmail("galo", 8);
+    // c->recebeEmail("vasco", 4);
+    // c->recebeEmail("eu", 5);
+    // std::cout << c->consultaEmail() << std::endl;
+    // c->recebeEmail("safoa", 9);
+    // std::cout << c->consultaEmail() << std::endl;
+    // c->limpaCaixa();
+    // std::cout << c->consultaEmail() << std::endl;
+
+    // delete c;
+
+    Servidor *s = new Servidor;
+    // s->criarCaixa(345);
+    // s->criarCaixa(32);
+    // s->criarCaixa(76);
+
+    std::cout << s->criarCaixa(345) << std::endl;
+    std::cout << s->criarCaixa(63) << std::endl;
+    std::cout << s->criarCaixa(990) << std::endl;
+    std::cout << s->criarCaixa(345) << std::endl;
+
+    return 0;
+}
