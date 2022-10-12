@@ -1,3 +1,6 @@
+#ifndef EMAIL_H
+#define EMAIL_H
+
 #include <string>
 
 class Email {
@@ -17,3 +20,5 @@ class Email {
 
     friend class CaixaDeEntrada;
 };
+
+#endif
