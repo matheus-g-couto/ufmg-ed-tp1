@@ -1,5 +1,14 @@
 #include "email.h"
 
+int handlePriorityRange(int prio) {
+    if (prio < 0)
+        return 0;
+    if (prio > 9)
+        return 9;
+
+    return prio;
+}
+
 Email::Email() {
     this->msg = "";
     this->priority = 0;
@@ -8,7 +17,7 @@ Email::Email() {
 
 Email::Email(std::string msg, int prio) {
     this->msg = msg;
-    this->priority = prio;
+    this->priority = handlePriorityRange(prio);
     this->next = NULL;
 }
 
@@ -22,6 +31,6 @@ void Email::setMessage(std::string msg) { this->msg = msg; }
 
 std::string Email::getMessage() { return this->msg; }
 
-void Email::setPrio(int prio) { this->priority = prio; }
+void Email::setPrio(int prio) { this->priority = handlePriorityRange(prio); }
 
 int Email::getPrio() { return this->priority; }

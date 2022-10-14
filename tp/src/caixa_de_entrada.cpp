@@ -18,8 +18,7 @@ int CaixaDeEntrada::getId() { return this->id; }
 
 std::string CaixaDeEntrada::consultaEmail() {
     if (email_head->next == NULL)
-        // dar erro
-        return "nao tem msg";
+        return "CAIXA DE ENTRADA VAZIA";
 
     Email *aux = email_head->next;
     std::string msg = aux->getMessage();

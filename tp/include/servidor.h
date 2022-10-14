@@ -2,6 +2,7 @@
 #define SERVIDOR_H
 
 #include "caixa_de_entrada.h"
+#include <string>
 
 // Cada usuário tem uma caixa de entrada e aponta para um outro usuário
 struct User {
@@ -14,15 +15,17 @@ struct User {
 class Servidor {
   private:
     User *head;
-    User *encontrarCaixa(int id);
+    User *encontrarUsuario(int id);
     void printaCaixas();
 
   public:
     Servidor();
     ~Servidor();
-    bool criarCaixa(int id);
-    bool excluirCaixa(int id);
+    bool criarUsuario(int id);
+    bool excluirUsuario(int id);
     void limpaServidor();
+    bool enviarEmail(int id, std::string msg, int prio);
+    std::string consultarEmail(int id);
 };
 
 #endif

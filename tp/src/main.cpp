@@ -70,65 +70,63 @@ Options resolveOption(std::string input) {
 }
 
 int main(int argc, char **argv) {
-    // Servidor *server = new Servidor();
+    Servidor *server = new Servidor();
 
-    // std::string input;
-    // std::stringstream ss;
+    std::string input;
+    std::stringstream ss;
 
-    // std::ofstream output("bin/out.txt");
-    // while (std::getline(std::cin, input)) {
-    //     ss = std::stringstream();
-    //     ss << input;
-    //     std::string op;
-    //     ss >> op;
+    while (std::getline(std::cin, input)) {
+        ss = std::stringstream();
+        ss << input;
+        std::string op;
+        ss >> op;
 
-    //     int id = -1;
-    //     ss >> id;
+        int id = -1;
+        ss >> id;
 
-    //     switch (resolveOption(op)) {
-    //         case CADASTRA:
-    //             if (server->criarCaixa(id))
-    //                 output << "CONTA " << id << " CADASTRADA" << std::endl;
-    //             else
-    //                 output << "CONTA " << id << " JA EXISTENTE" << std::endl;
-    //             break;
-    //         case REMOVE:
-    //             server->excluirCaixa(id);
-    //             break;
-    //         case ENTREGA:
-    //             break;
-    //         case CONSULTA:
-    //             break;
+        std::string email_msg = "", email_word = "";
+        int email_prio = 0;
 
-    //         default:
-    //             break;
-    //     }
+        switch (resolveOption(op)) {
+            case CADASTRA:
+                if (server->criarUsuario(id))
+                    std::cout << "OK: CONTA " << id << " CADASTRADA"
+                              << std::endl;
+                else
+                    std::cout << "ERRO: CONTA " << id << " JA EXISTENTE"
+                              << std::endl;
+                break;
+            case REMOVE:
+                if (server->excluirUsuario(id))
+                    std::cout << "OK: CONTA " << id << " REMOVIDA" << std::endl;
+                else
+                    std::cout << "ERRO: CONTA " << id << " NAO EXISTE"
+                              << std::endl;
+                break;
+            case ENTREGA:
+                ss >> email_prio;
+                while (ss >> email_word) {
+                    if (!email_word.compare("FIM"))
+                        break;
+                    email_msg += email_word;
+                    email_msg += " ";
+                }
+                if (server->enviarEmail(id, email_msg, email_prio))
+                    std::cout << "OK: MENSAGEM PARA " << id << " ENTREGUE"
+                              << std::endl;
+                else
+                    std::cout << "ERRO: CONTA " << id << " NAO EXISTE"
+                              << std::endl;
+                break;
+            case CONSULTA:
+                std::cout << server->consultarEmail(id) << std::endl;
+                break;
 
-    //     // std::cout << op << std::endl;
-    // }
+            default:
+                break;
+        }
+    }
 
-    // CaixaDeEntrada *c = new CaixaDeEntrada;
-    // std::cout << c->consultaEmail() << std::endl;
-    // c->recebeEmail("galo", 8);
-    // c->recebeEmail("vasco", 4);
-    // c->recebeEmail("eu", 5);
-    // std::cout << c->consultaEmail() << std::endl;
-    // c->recebeEmail("safoa", 9);
-    // std::cout << c->consultaEmail() << std::endl;
-    // c->limpaCaixa();
-    // std::cout << c->consultaEmail() << std::endl;
-
-    // delete c;
-
-    Servidor *s = new Servidor;
-    // s->criarCaixa(345);
-    // s->criarCaixa(32);
-    // s->criarCaixa(76);
-
-    std::cout << s->criarCaixa(345) << std::endl;
-    std::cout << s->criarCaixa(63) << std::endl;
-    std::cout << s->criarCaixa(990) << std::endl;
-    std::cout << s->criarCaixa(345) << std::endl;
-
+    delete server;
     return 0;
 }
