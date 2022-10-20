@@ -2,6 +2,8 @@
 #define CAIXA_DE_ENTRADA_H
 
 #include "email.h"
+#include "memlog.h"
+#include "msgassert.h"
 #include <string>
 
 class CaixaDeEntrada {

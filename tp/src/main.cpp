@@ -1,5 +1,3 @@
-#include "caixa_de_entrada.h"
-#include "email.h"
 #include "memlog.h"
 #include "msgassert.h"
 #include "servidor.h"
@@ -8,51 +6,6 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-
-/* struct Flags {
-    std::string input_file;
-    std::string output_file;
-    char log_file[100];
-    bool regmem;
-
-    Flags()
-        : input_file("assets/in/mineirao.ppm"),
-          output_file("assets/out/output.pgm"), log_file("bin/log.out"),
-          regmem(false) {}
-};
-*/
-
-/* void parse_args(int argc, char **argv, Flags *f) {
-    int opt;
-    bool has_in = false, has_out = false, has_log = false;
-    while ((opt = getopt(argc, argv, "i:o:p:l")) != -1) {
-        switch (opt) {
-        case 'i':
-            has_in = true;
-            f->input_file = optarg;
-            break;
-        case 'o':
-            has_out = true;
-            f->output_file = optarg;
-            break;
-        case 'p':
-            has_log = true;
-            strcpy(f->log_file, optarg);
-            break;
-        case 'l':
-            f->regmem = true;
-            break;
-        case '?':
-            erroAssert(false, "Opcao de linha de comando invalida");
-            break;
-        }
-    }
-
-    avisoAssert(has_in, "Usando o arquivo .ppm padrao: assets/in/mineirao.ppm");
-    avisoAssert(has_out, "Usando o arquivo .pgm padrao: assets/out/output.pgm");
-    avisoAssert(has_log, "Usando o arquivo de log padrao: bin/log.out");
-}
-*/
 
 enum Options { CADASTRA, REMOVE, ENTREGA, CONSULTA, INVALIDO };
 
@@ -70,10 +23,17 @@ Options resolveOption(std::string input) {
 }
 
 int main(int argc, char **argv) {
+    char log_name[12] = "bin/log.out";
+    iniciaMemLog(log_name);
+    // desativaMemLog();
+    ativaMemLog();
+
     Servidor *server = new Servidor();
 
     std::string input;
     std::stringstream ss;
+
+    int num_ops = -1;
 
     while (std::getline(std::cin, input)) {
         ss = std::stringstream();
@@ -83,25 +43,19 @@ int main(int argc, char **argv) {
 
         int id = -1;
         ss >> id;
+        erroAssert(id >= 0, "Id do usuário deve ser um número positivo");
+        erroAssert(id <= 1000000, "Id do usuário deve ser menor que 1 milhão");
 
         std::string email_msg = "", email_word = "";
         int email_prio = 0;
 
+        defineFaseMemLog(num_ops);
         switch (resolveOption(op)) {
             case CADASTRA:
-                if (server->criarUsuario(id))
-                    std::cout << "OK: CONTA " << id << " CADASTRADA"
-                              << std::endl;
-                else
-                    std::cout << "ERRO: CONTA " << id << " JA EXISTENTE"
-                              << std::endl;
+                server->criarUsuario(id);
                 break;
             case REMOVE:
-                if (server->excluirUsuario(id))
-                    std::cout << "OK: CONTA " << id << " REMOVIDA" << std::endl;
-                else
-                    std::cout << "ERRO: CONTA " << id << " NAO EXISTE"
-                              << std::endl;
+                server->excluirUsuario(id);
                 break;
             case ENTREGA:
                 ss >> email_prio;
@@ -111,22 +65,20 @@ int main(int argc, char **argv) {
                     email_msg += email_word;
                     email_msg += " ";
                 }
-                if (server->enviarEmail(id, email_msg, email_prio))
-                    std::cout << "OK: MENSAGEM PARA " << id << " ENTREGUE"
-                              << std::endl;
-                else
-                    std::cout << "ERRO: CONTA " << id << " NAO EXISTE"
-                              << std::endl;
+                server->enviarEmail(id, email_msg, email_prio);
                 break;
             case CONSULTA:
-                std::cout << server->consultarEmail(id) << std::endl;
+                server->consultarEmail(id);
                 break;
 
-            default:
-                break;
+            case INVALIDO:
+                erroAssert(false, "COMANDO DESCONHECIDO");
         }
+
+        num_ops++;
     }
 
+    defineFaseMemLog(num_ops);
     delete server;
-    return 0;
+    return finalizaMemLog();
 }

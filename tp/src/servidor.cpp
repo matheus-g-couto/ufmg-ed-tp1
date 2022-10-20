@@ -7,32 +7,29 @@ Servidor::Servidor() {
     head->next = NULL;
 }
 
-Servidor::~Servidor() {}
+Servidor::~Servidor() {
+    limpaServidor();
+    delete head;
+}
 
 User *Servidor::encontrarUsuario(int id) {
     User *aux = head;
 
     while (aux->next != NULL) {
-        if (aux->caixa->getId() == id)
+        if (aux->caixa->getId() == id) {
+            LEMEMLOG((long int)(&(aux)), sizeof(User), aux->caixa->getId());
             return aux;
+        }
         aux = aux->next;
     }
     return NULL;
 }
 
-void Servidor::printaCaixas() {
-    User *aux = head;
-    while (aux->next != NULL) {
-        std::cout << aux->caixa->getId() << " ";
-        aux = aux->next;
+void Servidor::criarUsuario(int id) {
+    if (encontrarUsuario(id) != NULL) {
+        std::cout << "ERRO: CONTA " << id << " JA EXISTENTE" << std::endl;
+        return;
     }
-
-    std::cout << std::endl;
-}
-
-bool Servidor::criarUsuario(int id) {
-    if (encontrarUsuario(id) != NULL)
-        return false;
 
     CaixaDeEntrada *cx = new CaixaDeEntrada;
     cx->setId(id);
@@ -40,15 +37,18 @@ bool Servidor::criarUsuario(int id) {
     User *user = new User;
     user->caixa = cx;
     user->next = head;
+    ESCREVEMEMLOG((long int)(&(user)), sizeof(User), cx->getId());
 
     head = user;
-    return true;
+    std::cout << "OK: CONTA " << id << " CADASTRADA" << std::endl;
 }
 
-bool Servidor::excluirUsuario(int id) {
+void Servidor::excluirUsuario(int id) {
     User *user = encontrarUsuario(id);
-    if (user == NULL)
-        return false;
+    if (user == NULL) {
+        std::cout << "ERRO: CONTA " << id << " NAO EXISTE" << std::endl;
+        return;
+    }
 
     User *aux = head;
     if (head == user) {
@@ -62,7 +62,7 @@ bool Servidor::excluirUsuario(int id) {
     delete user->caixa;
     delete user;
 
-    return true;
+    std::cout << "OK: CONTA " << id << " REMOVIDA" << std::endl;
 }
 
 void Servidor::limpaServidor() {
@@ -75,20 +75,25 @@ void Servidor::limpaServidor() {
     }
 }
 
-bool Servidor::enviarEmail(int id, std::string msg, int prio) {
+void Servidor::enviarEmail(int id, std::string msg, int prio) {
     User *user = encontrarUsuario(id);
-    if (user == NULL)
-        return false;
+    if (user == NULL) {
+        std::cout << "ERRO: CONTA " << id << " NAO EXISTE" << std::endl;
+        return;
+    }
 
     user->caixa->recebeEmail(msg, prio);
-    return true;
+    std::cout << "OK: MENSAGEM PARA " << id << " ENTREGUE" << std::endl;
 }
 
-std::string Servidor::consultarEmail(int id) {
+void Servidor::consultarEmail(int id) {
     User *user = encontrarUsuario(id);
-    if (user == NULL)
-        return "ERRO: CONTA " + std::to_string(id) + " NAO EXISTE";
+    if (user == NULL) {
+        std::cout << "ERRO: CONTA " + std::to_string(id) + " NAO EXISTE"
+                  << std::endl;
+        return;
+    }
 
-    return "CONSULTA " + std::to_string(id) + ": " +
-           user->caixa->consultaEmail();
+    std::cout << "CONSULTA " << std::to_string(id) << ": "
+              << user->caixa->consultaEmail() << std::endl;
 }

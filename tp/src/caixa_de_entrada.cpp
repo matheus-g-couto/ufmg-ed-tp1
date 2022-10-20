@@ -1,5 +1,4 @@
 #include "caixa_de_entrada.h"
-#include <iostream>
 
 CaixaDeEntrada::CaixaDeEntrada() {
     id = -1;
@@ -12,9 +11,16 @@ CaixaDeEntrada::~CaixaDeEntrada() {
     delete email_head;
 }
 
-void CaixaDeEntrada::setId(int id) { this->id = id; }
+void CaixaDeEntrada::setId(int id) {
+    this->id = id;
 
-int CaixaDeEntrada::getId() { return this->id; }
+    ESCREVEMEMLOG((long int)(&(this->id)), sizeof(int), this->id);
+}
+
+int CaixaDeEntrada::getId() {
+    LEMEMLOG((long int)(&(this->id)), sizeof(int), this->id);
+    return this->id;
+}
 
 std::string CaixaDeEntrada::consultaEmail() {
     if (email_head->next == NULL)
@@ -23,6 +29,7 @@ std::string CaixaDeEntrada::consultaEmail() {
     Email *aux = email_head->next;
     std::string msg = aux->getMessage();
 
+    LEMEMLOG((long int)(&(aux->msg)), sizeof(std::string), this->id);
     email_head->next = aux->next;
     delete aux;
 
@@ -31,6 +38,8 @@ std::string CaixaDeEntrada::consultaEmail() {
 
 void CaixaDeEntrada::recebeEmail(std::string msg, int prio) {
     Email *incoming = new Email(msg, prio);
+    ESCREVEMEMLOG((long int)(&(incoming->msg)), sizeof(std::string), this->id);
+    ESCREVEMEMLOG((long int)(&(incoming->priority)), sizeof(int), this->id);
 
     if (email_head->next == NULL)
         email_head->next = incoming;

@@ -1,6 +1,7 @@
 #ifndef EMAIL_H
 #define EMAIL_H
 
+#include "memlog.h"
 #include <string>
 
 class Email {
